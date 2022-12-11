@@ -103,7 +103,7 @@ while i+1 < n:
                 s += char_arr[x][y]
         lst.append((' '.join(s.strip().split()), starti, endi, startj, endj))
 
-print(lst)
+# print(lst)
 
 
 # group into rows
@@ -119,7 +119,7 @@ for t in lst:
 if len(curr_row) > 0:
     rows.append(curr_row)
 
-print(rows)
+# print(rows)
 
 
 # harcode: how many bits is a row
