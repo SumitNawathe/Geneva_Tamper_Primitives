@@ -2,12 +2,14 @@ from functools import reduce
 
 class CodeGen:
     def gen_class_code(self, layer_name, fields):
+        field_names = self.fields_to_field_names(fields)
         codes = [
             self.gen_class_base_code(layer_name),
-            self.gen_fields_code(fields),
-            self.gen_init_code()
+            self.gen_fields_code(field_names),
+            self.gen_init_code(),
+            self.gen_all_gens_code(fields)
         ]
-        return reduce(lambda x, y: x + y, codes)
+        return self.combine_codes(codes, newline=False)
 
     def gen_class_base_code(self, layer_name):
         class_base_code = f"""import random
@@ -22,9 +24,9 @@ class {layer_name}Layer:
 """
         return class_base_code
         
-    def gen_fields_code(self, fields):
-        fields_lines = [f"        '{field}'," for field in fields]
-        fields_lines_combined = reduce(lambda x, y: x + '\n' + y, fields_lines)
+    def gen_fields_code(self, field_names):
+        fields_lines = [f"        '{field_name}'," for field_name in field_names]
+        fields_lines_combined = self.combine_codes(fields_lines, newline=True)
         fields_code = f"""    _fields = [
 {fields_lines_combined}
     ]
@@ -44,8 +46,30 @@ class {layer_name}Layer:
 """
         return init_code
 
+    def gen_gen_code(self, field_name, field_len):
+        max_val = 2 ** field_len - 1
+        gen_code = f"""
+    def gen_{field_name}(self, field):
+        return random.randint(1, {max_val})
+"""
+        return gen_code
+
+    def gen_all_gens_code(self, fields):
+        gen_codes = [self.gen_gen_code(field_name, field_len) for field_name, field_len in fields]
+        return self.combine_codes(gen_codes, newline=False)
+
+    def fields_to_field_names(self, fields):
+        return [field[0] for field in fields]
+
+    def combine_codes(self, codes, newline=False):
+        newline_char = '\n' if newline else ''
+        return reduce(lambda x, y: x + newline_char + y, codes)
+
 
 if __name__ == '__main__':
     codegen = CodeGen()
     # print(codegen.gen_fields_code(['abc', 'def']))
-    print(codegen.gen_class_code('IP', ['abc', 'def', 'ghi']))
+    # print(codegen.gen_class_code('IP', ['abc', 'def', 'ghi']))
+    # print(codegen.gen_gen_code('test', 8))
+    # print(codegen.gen_all_gens_code([('field', 3), ('tractor', 500), ('farmer', 8)]))
+    print(codegen.gen_class_code('IP', [('field1', 3), ('field2', 8), ('field3', 20)]))
