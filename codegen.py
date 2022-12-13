@@ -64,12 +64,3 @@ class {layer_name}Layer:
     def combine_codes(self, codes, newline=False):
         newline_char = '\n' if newline else ''
         return reduce(lambda x, y: x + newline_char + y, codes)
-
-
-if __name__ == '__main__':
-    codegen = CodeGen()
-    # print(codegen.gen_fields_code(['abc', 'def']))
-    # print(codegen.gen_class_code('IP', ['abc', 'def', 'ghi']))
-    # print(codegen.gen_gen_code('test', 8))
-    # print(codegen.gen_all_gens_code([('field', 3), ('tractor', 500), ('farmer', 8)]))
-    print(codegen.gen_class_code('IP', [('field1', 3), ('field2', 8), ('field3', 20)]))
