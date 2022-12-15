@@ -17,7 +17,7 @@ class CodeGen:
 from layers.layer import Layer
 from scapy.all import {layer_name}
 
-class {layer_name}Layer:
+class {layer_name}Layer(Layer):
     name = "{layer_name}"
     protocol = {layer_name}
 
